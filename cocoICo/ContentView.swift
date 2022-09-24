@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct ContentView: View {
     @State var txt = "こんにちは"
@@ -56,7 +57,7 @@ struct NextView: View{
                 .textFieldStyle(RoundedBorderTextFieldStyle())
             HStack(spacing:100){
                 Button("登録") {
-                    
+                    Auth.auth().signIn(withEmail: email, password: password)
                 }
                 .font(.headline)
                 .foregroundColor(Color.white)
