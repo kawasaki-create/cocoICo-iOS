@@ -182,32 +182,82 @@ struct NextView: View{
 
 struct HomeView: View{
    @State var topName = ""
+    @State var bottomBarKubun = 0
+    @State var showingModal = false
     let userID = Auth.auth().currentUser!.uid
     var body: some View{
         NavigationView {
-            VStack{
-                Text(userID).foregroundColor(Color.red)
+            ZStack{
+                VStack{
+                    if(bottomBarKubun == 0){
+                        Text(userID).foregroundColor(Color.red)
+                    }else if(bottomBarKubun == 1){
+                        Text("行きたい店")
+                    }else if(bottomBarKubun == 2){
+                        Text("友達")
+                    }else if(bottomBarKubun == 3){
+                        Text("設定")
+                    }
+                }
+                .navigationTitle(topName)
+                .navigationBarTitleDisplayMode(.inline)
+                if(bottomBarKubun == 1){
+                    floatingButton
+                }
             }
-            .navigationTitle(topName)
-            .navigationBarTitleDisplayMode(.inline)
-            
             .toolbar{
                 ToolbarItemGroup(placement: .bottomBar){
                     Button("行きたい店") {
                         self.topName = "行きたい店"
+                        bottomBarKubun = 1
                     }
                     Spacer()
                     Button("友達") {
                         topName = "友達"
+                        bottomBarKubun = 2
                     }
                     Spacer()
                     Button("設定") {
                         topName = "設定"
+                        bottomBarKubun = 3
                     }
                 }
             }
         }
     }
+    var floatingButton: some View {
+            VStack {
+                // 2. ButtonをViewの下方に配置
+                Spacer()
+                HStack {
+                    // 3. Viewの右方に配置
+                    Spacer()
+                    Button(action: {
+                        // ボタンを押した時のアクションを記載
+                        self.showingModal.toggle()
+                    }) {
+                        // 4. Buttonのデザインを作成。記号の"+"を配置。
+                        Image(systemName: "plus.circle.fill")
+                            // Fontサイズ
+                            .font(.system(size: 24))
+                            // Buttonの文字色
+                            .foregroundColor(.white)
+                            // Buttonのサイズ
+                            .frame(width: 60, height: 60)
+                            // Buttonの色
+                            .background(Color.blue)
+                            // Buttonの角の丸み
+                            .cornerRadius(30.0)
+                            // Buttonの陰
+                            .shadow(color: .gray, radius: 3, x: 3, y: 3)
+                            // Buttonの端からの距離
+                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 16.0, trailing: 20))
+                    }.sheet(isPresented: $showingModal){
+                        NextView()
+                    }
+                }
+            }
+        }
 }
 
 
